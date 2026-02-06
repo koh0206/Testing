@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Leave Approval Desk</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Team Operations</p>
+        <h1>Leave Approval Desk</h1>
+        <p class="subtitle">
+          Review employee leave requests, check balances, and approve with confidence.
+        </p>
+      </div>
+      <div class="summary">
+        <div>
+          <span class="label">Pending</span>
+          <strong id="pending-count">0</strong>
+        </div>
+        <div>
+          <span class="label">Approved Today</span>
+          <strong id="approved-count">0</strong>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <header>
+          <h2>New Request</h2>
+          <p>Capture a new leave request when one comes in by email or chat.</p>
+        </header>
+        <form id="request-form">
+          <label>
+            Employee Name
+            <input type="text" name="employee" placeholder="e.g. Lila Cooper" required />
+          </label>
+          <label>
+            Leave Type
+            <select name="type" required>
+              <option value="">Select type</option>
+              <option value="Vacation">Vacation</option>
+              <option value="Sick">Sick</option>
+              <option value="Personal">Personal</option>
+              <option value="Parental">Parental</option>
+              <option value="Training">Training</option>
+            </select>
+          </label>
+          <label>
+            Start Date
+            <input type="date" name="start" required />
+          </label>
+          <label>
+            End Date
+            <input type="date" name="end" required />
+          </label>
+          <label>
+            Coverage Plan
+            <textarea
+              name="coverage"
+              rows="3"
+              placeholder="Who is covering tasks?"
+              required
+            ></textarea>
+          </label>
+          <button type="submit">Add Request</button>
+        </form>
+      </section>
+
+      <section class="panel">
+        <header>
+          <h2>Pending Approvals</h2>
+          <p>Approve or decline after reviewing balance and coverage.</p>
+        </header>
+        <div id="request-list" class="request-list"></div>
+      </section>
+    </main>
+
+    <template id="request-card">
+      <article class="card">
+        <div class="card-header">
+          <div>
+            <h3 class="employee-name"></h3>
+            <p class="meta"></p>
+          </div>
+          <span class="badge"></span>
+        </div>
+        <p class="coverage"></p>
+        <div class="details">
+          <div>
+            <span class="label">Balance</span>
+            <strong class="balance"></strong>
+          </div>
+          <div>
+            <span class="label">Requested Days</span>
+            <strong class="days"></strong>
+          </div>
+          <div>
+            <span class="label">Submitted</span>
+            <strong class="submitted"></strong>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="approve">Approve</button>
+          <button class="decline" type="button">Decline</button>
+        </div>
+      </article>
+    </template>
+
+    <footer>
+      <p>Keep conversations private and share decisions with HR in the team channel.</p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
