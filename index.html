@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Leave Request Approval</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div>
+        <p class="eyebrow">Approval Workspace</p>
+        <h1>Employee Leave Request Approval</h1>
+        <p class="subtitle">Review leave details, capture decisions, and track the approval history.</p>
+      </div>
+      <div class="status-card" aria-live="polite">
+        <p class="status-label">Current Status</p>
+        <p id="current-status" class="status pending">Pending Review</p>
+        <p id="status-detail" class="status-detail">Awaiting your decision</p>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <h2>Employee Details</h2>
+        <dl class="details">
+          <div>
+            <dt>Name</dt>
+            <dd>Aisha Khan</dd>
+          </div>
+          <div>
+            <dt>Role</dt>
+            <dd>Customer Success Manager</dd>
+          </div>
+          <div>
+            <dt>Team</dt>
+            <dd>Enterprise Accounts</dd>
+          </div>
+          <div>
+            <dt>Requested On</dt>
+            <dd>April 21, 2024</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2>Leave Request</h2>
+        <dl class="details">
+          <div>
+            <dt>Leave Type</dt>
+            <dd>Annual Leave</dd>
+          </div>
+          <div>
+            <dt>Dates</dt>
+            <dd>May 10, 2024 – May 17, 2024</dd>
+          </div>
+          <div>
+            <dt>Total Days</dt>
+            <dd>6 working days</dd>
+          </div>
+          <div>
+            <dt>Coverage Plan</dt>
+            <dd>Handover to Luis with priority escalation doc.</dd>
+          </div>
+          <div class="full">
+            <dt>Reason</dt>
+            <dd>Family travel and personal commitments.</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="card">
+        <h2>Approval Decision</h2>
+        <form id="approval-form">
+          <label class="field">
+            Decision
+            <select id="decision" required>
+              <option value="" disabled selected>Select decision</option>
+              <option value="approved">Approve</option>
+              <option value="denied">Deny</option>
+              <option value="needs-info">Request More Info</option>
+            </select>
+          </label>
+
+          <label class="field">
+            Reviewer Name
+            <input id="reviewer" type="text" placeholder="Your name" required />
+          </label>
+
+          <label class="field">
+            Comments
+            <textarea id="comments" rows="4" placeholder="Add any notes for the employee."></textarea>
+          </label>
+
+          <div class="actions">
+            <button type="submit" class="primary">Submit Decision</button>
+            <button type="button" class="ghost" id="reset">Reset</button>
+          </div>
+          <p class="helper" id="form-helper" role="alert"></p>
+        </form>
+      </section>
+
+      <section class="card history">
+        <div class="history-header">
+          <h2>Approval History</h2>
+          <button class="ghost" id="clear-history" type="button">Clear History</button>
+        </div>
+        <ol id="history-list" class="history-list">
+          <li>
+            <span class="history-pill">Requested</span>
+            <div>
+              <p class="history-title">Employee submitted request</p>
+              <p class="history-meta">April 21, 2024 · 9:12 AM</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
