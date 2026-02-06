@@ -4,7 +4,217 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Leave Approval Desk</title>
-    <link rel="stylesheet" href="styles.css" />
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: "Inter", system-ui, sans-serif;
+        background: #f5f6fb;
+        color: #1f2430;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 32px;
+      }
+
+      .hero {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 24px;
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 28px 32px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+        margin-bottom: 32px;
+      }
+
+      .eyebrow {
+        letter-spacing: 0.2em;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #64748b;
+        margin-bottom: 8px;
+      }
+
+      .subtitle {
+        max-width: 480px;
+        color: #475569;
+        line-height: 1.5;
+      }
+
+      .summary {
+        display: grid;
+        grid-auto-flow: column;
+        gap: 24px;
+        align-items: center;
+      }
+
+      .summary strong {
+        display: block;
+        font-size: 28px;
+      }
+
+      .label {
+        font-size: 12px;
+        text-transform: uppercase;
+        color: #94a3b8;
+        letter-spacing: 0.1em;
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+      }
+
+      .panel {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .panel header p {
+        margin: 6px 0 0;
+        color: #64748b;
+      }
+
+      form {
+        display: grid;
+        gap: 16px;
+      }
+
+      label {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-weight: 600;
+        color: #1f2937;
+      }
+
+      input,
+      select,
+      textarea {
+        border-radius: 12px;
+        border: 1px solid #e2e8f0;
+        padding: 10px 12px;
+        font-size: 14px;
+        font-family: inherit;
+      }
+
+      button {
+        border: none;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-weight: 600;
+        cursor: pointer;
+        background: #2563eb;
+        color: #ffffff;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+      }
+
+      .request-list {
+        display: grid;
+        gap: 16px;
+      }
+
+      .card {
+        border-radius: 18px;
+        border: 1px solid #e2e8f0;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        background: #f8fafc;
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .employee-name {
+        margin: 0;
+      }
+
+      .meta {
+        margin: 4px 0 0;
+        color: #475569;
+      }
+
+      .badge {
+        background: #e0f2fe;
+        color: #0369a1;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .coverage {
+        margin: 0;
+        color: #334155;
+      }
+
+      .details {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+        background: #ffffff;
+        border-radius: 14px;
+        padding: 12px;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+      }
+
+      .actions .decline {
+        background: #f97316;
+      }
+
+      .actions .approve {
+        background: #22c55e;
+      }
+
+      .empty {
+        text-align: center;
+        color: #64748b;
+        margin: 24px 0 0;
+      }
+
+      footer {
+        margin-top: 32px;
+        text-align: center;
+        color: #94a3b8;
+      }
+
+      @media (max-width: 720px) {
+        body {
+          padding: 20px;
+        }
+
+        .hero {
+          padding: 20px;
+        }
+      }
+    </style>
   </head>
   <body>
     <header class="hero">
@@ -114,6 +324,147 @@
       <p>Keep conversations private and share decisions with HR in the team channel.</p>
     </footer>
 
-    <script src="app.js"></script>
+    <script>
+      const requests = [
+        {
+          id: "REQ-1024",
+          employee: "Jordan Matthews",
+          type: "Vacation",
+          start: "2024-07-18",
+          end: "2024-07-22",
+          coverage: "Sam will handle client updates and the weekly report.",
+          balance: 9,
+          submitted: "Today, 9:10 AM",
+        },
+        {
+          id: "REQ-1025",
+          employee: "Amira Khan",
+          type: "Personal",
+          start: "2024-07-20",
+          end: "2024-07-20",
+          coverage: "Paige is covering inbox triage for the day.",
+          balance: 5,
+          submitted: "Yesterday, 4:45 PM",
+        },
+        {
+          id: "REQ-1026",
+          employee: "Diego Alvarez",
+          type: "Training",
+          start: "2024-07-29",
+          end: "2024-07-31",
+          coverage: "Marcus will lead daily standups and client calls.",
+          balance: 12,
+          submitted: "Yesterday, 2:10 PM",
+        },
+      ];
+
+      const list = document.querySelector("#request-list");
+      const template = document.querySelector("#request-card");
+      const pendingCount = document.querySelector("#pending-count");
+      const approvedCount = document.querySelector("#approved-count");
+      const form = document.querySelector("#request-form");
+
+      let approvedToday = 0;
+
+      function formatRange(start, end) {
+        const options = { month: "short", day: "numeric" };
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        const startText = startDate.toLocaleDateString("en-US", options);
+        const endText = endDate.toLocaleDateString("en-US", options);
+        return start === end ? startText : `${startText} → ${endText}`;
+      }
+
+      function calculateDays(start, end) {
+        const startDate = new Date(start);
+        const endDate = new Date(end);
+        const diff = Math.round((endDate - startDate) / (1000 * 60 * 60 * 24));
+        return diff + 1;
+      }
+
+      function updateSummary() {
+        pendingCount.textContent = requests.length.toString();
+        approvedCount.textContent = approvedToday.toString();
+      }
+
+      function renderRequests() {
+        list.innerHTML = "";
+
+        requests.forEach((request) => {
+          const card = template.content.cloneNode(true);
+          card.querySelector(".employee-name").textContent = request.employee;
+          card.querySelector(".meta").textContent = `${request.type} • ${formatRange(
+            request.start,
+            request.end
+          )}`;
+          card.querySelector(".badge").textContent = request.id;
+          card.querySelector(".coverage").textContent = request.coverage;
+          card.querySelector(".balance").textContent = `${request.balance} days`;
+          card.querySelector(".days").textContent = `${calculateDays(
+            request.start,
+            request.end
+          )} days`;
+          card.querySelector(".submitted").textContent = request.submitted;
+
+          const approveButton = card.querySelector(".approve");
+          const declineButton = card.querySelector(".decline");
+
+          approveButton.addEventListener("click", () => handleDecision(request.id, true));
+          declineButton.addEventListener("click", () => handleDecision(request.id, false));
+
+          list.appendChild(card);
+        });
+
+        if (requests.length === 0) {
+          const empty = document.createElement("p");
+          empty.className = "empty";
+          empty.textContent = "All caught up! No pending approvals.";
+          list.appendChild(empty);
+        }
+
+        updateSummary();
+      }
+
+      function handleDecision(id, approved) {
+        const index = requests.findIndex((request) => request.id === id);
+        if (index === -1) return;
+
+        requests.splice(index, 1);
+        if (approved) {
+          approvedToday += 1;
+        }
+        renderRequests();
+      }
+
+      function addRequest(event) {
+        event.preventDefault();
+        const data = new FormData(event.target);
+        const employee = data.get("employee");
+        const type = data.get("type");
+        const start = data.get("start");
+        const end = data.get("end");
+        const coverage = data.get("coverage");
+
+        if (!employee || !type || !start || !end || !coverage) return;
+
+        requests.unshift({
+          id: `REQ-${Math.floor(Math.random() * 9000 + 1000)}`,
+          employee,
+          type,
+          start,
+          end,
+          coverage,
+          balance: Math.floor(Math.random() * 10 + 5),
+          submitted: "Just now",
+        });
+
+        event.target.reset();
+        renderRequests();
+      }
+
+      form.addEventListener("submit", addRequest);
+
+      renderRequests();
+    </script>
   </body>
 </html>
