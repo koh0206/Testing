@@ -7,23 +7,88 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="page">
+
+  <!-- ============ Config screen (first run on this device) ============ -->
+  <div id="config-screen" class="auth-shell" hidden>
+    <div class="auth-card">
+      <h1>Connect Supabase</h1>
+      <p class="auth-help">Paste your Supabase project URL and anon key. Stored only in this browser. You'll only do this once per device.</p>
+      <form id="config-form">
+        <label class="field">
+          <span class="prop-name">Project URL</span>
+          <input id="cfg-url" type="url" placeholder="https://xxxx.supabase.co" required />
+        </label>
+        <label class="field">
+          <span class="prop-name">anon (public) key</span>
+          <input id="cfg-key" type="text" placeholder="eyJhbGciOi..." required />
+        </label>
+        <div class="actions">
+          <button type="submit" class="primary">Continue</button>
+        </div>
+        <p class="helper" id="cfg-helper"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ Auth screen ============ -->
+  <div id="auth-screen" class="auth-shell" hidden>
+    <div class="auth-card">
+      <h1><span class="title-icon">📝</span> My To-do List</h1>
+      <p class="auth-help" id="auth-help">Sign in to manage your tasks.</p>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-mode="signin" type="button">Sign in</button>
+        <button class="auth-tab" data-mode="signup" type="button">Sign up</button>
+      </div>
+      <form id="auth-form">
+        <label class="field auth-signup-only" hidden>
+          <span class="prop-name">Display name</span>
+          <input id="auth-name" type="text" placeholder="Your name" />
+        </label>
+        <label class="field">
+          <span class="prop-name">Email</span>
+          <input id="auth-email" type="email" required />
+        </label>
+        <label class="field">
+          <span class="prop-name">Password</span>
+          <input id="auth-password" type="password" minlength="6" required />
+        </label>
+        <div class="actions">
+          <button type="submit" class="primary" id="auth-submit">Sign in</button>
+        </div>
+        <p class="helper" id="auth-helper"></p>
+      </form>
+      <p class="auth-foot"><button class="link" id="reset-config" type="button">Reset Supabase config</button></p>
+    </div>
+  </div>
+
+  <!-- ============ Main app ============ -->
+  <div id="app-screen" class="page" hidden>
     <header class="header">
       <div class="title-block">
-        <h1><span class="title-icon">✂️</span> My To-do List</h1>
-        <p class="subtitle">Personal and team tasks — Notion-style.</p>
+        <h1><span class="title-icon">📝</span> My To-do List</h1>
+        <p class="subtitle">Personal and team tasks.</p>
       </div>
-      <div class="stats" aria-live="polite">
-        <div class="stat-card"><p class="stat-label">To Do</p><p class="stat-value" id="stat-todo">0</p></div>
-        <div class="stat-card"><p class="stat-label">Doing</p><p class="stat-value" id="stat-doing">0</p></div>
-        <div class="stat-card"><p class="stat-label">Done</p><p class="stat-value" id="stat-done">0</p></div>
+      <div class="user-block">
+        <div class="stats">
+          <div class="stat-card"><p class="stat-label">To Do</p><p class="stat-value" id="stat-todo">0</p></div>
+          <div class="stat-card"><p class="stat-label">Doing</p><p class="stat-value" id="stat-doing">0</p></div>
+          <div class="stat-card"><p class="stat-label">Done</p><p class="stat-value" id="stat-done">0</p></div>
+        </div>
+        <div class="user-meta">
+          <span class="user-name" id="user-name">—</span>
+          <span class="pill default" id="user-role">member</span>
+          <button class="ghost" id="logout" type="button">Log out</button>
+        </div>
       </div>
     </header>
 
     <nav class="tabs" role="tablist">
-      <button class="tab active" data-view="mine" role="tab" aria-selected="true">My Tasks</button>
-      <button class="tab" data-view="team" role="tab" aria-selected="false">Team Tasks</button>
-      <button class="tab" data-view="all" role="tab" aria-selected="false">All</button>
+      <button class="tab active" data-view="mine" role="tab">My Tasks</button>
+      <button class="tab" data-view="team" role="tab">Team Tasks</button>
+      <button class="tab" data-view="all" role="tab">All</button>
+      <button class="tab manager-only" data-view="approvals" role="tab" hidden>
+        Approvals <span class="badge" id="approval-badge" hidden>0</span>
+      </button>
     </nav>
 
     <section class="toolbar">
@@ -34,6 +99,7 @@
           <option value="">All statuses</option>
           <option value="To Do">To Do</option>
           <option value="Doing">Doing</option>
+          <option value="Pending Approval">Pending Approval</option>
           <option value="Done 🙌">Done 🙌</option>
           <option value="Routine Task">Routine Task</option>
           <option value="BOD Release">BOD Release</option>
@@ -59,7 +125,7 @@
         </select>
       </div>
       <div class="toolbar-right">
-        <button class="primary" id="new-task">+ New</button>
+        <button class="primary" id="new-task" type="button">+ New</button>
       </div>
     </section>
 
@@ -83,19 +149,17 @@
     </section>
 
     <footer class="footer">
-      <span>Saved in your browser.</span>
-      <button class="link" id="export-btn" type="button">Export JSON</button> ·
-      <button class="link" id="import-btn" type="button">Import JSON</button> ·
-      <button class="link danger-link" id="clear-all" type="button">Clear all</button>
-      <input type="file" id="import-file" accept="application/json" hidden />
+      <span>Signed in to <span id="cfg-domain">Supabase</span>.</span>
+      <button class="link" id="reset-config-app" type="button">Switch project</button>
     </footer>
   </div>
 
-  <div class="modal" id="modal" hidden>
+  <!-- ============ New / edit task modal ============ -->
+  <div class="modal" id="form-modal" hidden>
     <div class="modal-backdrop" data-close></div>
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="form-title">
       <div class="modal-head">
-        <h2 id="modal-title">New task</h2>
+        <h2 id="form-title">New task</h2>
         <button class="icon-btn" type="button" data-close aria-label="Close">×</button>
       </div>
       <form id="task-form">
@@ -103,13 +167,13 @@
 
         <label class="field">
           <span class="prop-name">📝 Name</span>
-          <input id="name" type="text" placeholder="Untitled" required />
+          <input id="f-name" type="text" placeholder="Untitled" required />
         </label>
 
         <div class="row">
           <label class="field">
             <span class="prop-name">🏷️ Status</span>
-            <select id="status">
+            <select id="f-status">
               <option>To Do</option>
               <option>Doing</option>
               <option>Done 🙌</option>
@@ -118,19 +182,17 @@
               <option>Today List</option>
             </select>
           </label>
-
           <label class="field">
             <span class="prop-name">🚩 Priority</span>
-            <select id="priority">
+            <select id="f-priority">
               <option>High</option>
               <option selected>Medium</option>
               <option>Low</option>
             </select>
           </label>
-
           <label class="field">
             <span class="prop-name">⏱ Task Duration</span>
-            <select id="duration">
+            <select id="f-duration">
               <option>Short</option>
               <option selected>Mid</option>
               <option>Long</option>
@@ -141,33 +203,67 @@
         <div class="row">
           <label class="field">
             <span class="prop-name">📅 Date</span>
-            <input id="date" type="date" />
+            <input id="f-date" type="date" />
           </label>
-
           <label class="field">
             <span class="prop-name">👥 Scope</span>
-            <select id="scope">
+            <select id="f-scope">
               <option value="mine">Personal</option>
               <option value="team">Team</option>
             </select>
           </label>
-
           <label class="field">
             <span class="prop-name">👤 Owner</span>
-            <input id="owner" type="text" placeholder="Me" list="known-owners" />
-            <datalist id="known-owners"></datalist>
+            <select id="f-owner"></select>
           </label>
         </div>
 
         <div class="actions">
-          <button type="submit" class="primary" id="submit-btn">Save</button>
+          <button type="submit" class="primary" id="form-submit">Save</button>
           <button type="button" class="ghost" data-close>Cancel</button>
         </div>
-        <p class="helper" id="form-helper" role="alert"></p>
+        <p class="helper" id="form-helper"></p>
       </form>
     </div>
   </div>
 
+  <!-- ============ Task detail modal ============ -->
+  <div class="modal" id="detail-modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card detail-card" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h2 id="detail-title">Task</h2>
+        <button class="icon-btn" type="button" data-close aria-label="Close">×</button>
+      </div>
+
+      <div class="detail-props" id="detail-props"></div>
+
+      <div class="detail-actions" id="detail-actions"></div>
+
+      <div class="detail-tabs">
+        <button class="detail-tab active" data-tab="timeline" type="button">Timeline</button>
+        <button class="detail-tab" data-tab="comments" type="button">Comments</button>
+      </div>
+
+      <div class="detail-pane" id="pane-timeline">
+        <form id="progress-form" class="post-form">
+          <textarea id="progress-input" rows="2" placeholder="Post a progress update on this task…"></textarea>
+          <button type="submit" class="primary">Post update</button>
+        </form>
+        <ol class="timeline" id="timeline-list"></ol>
+      </div>
+
+      <div class="detail-pane" id="pane-comments" hidden>
+        <form id="comment-form" class="post-form">
+          <textarea id="comment-input" rows="2" placeholder="Write a comment…"></textarea>
+          <button type="submit" class="primary">Add comment</button>
+        </form>
+        <ol class="comments-list" id="comments-list"></ol>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
 </body>
 </html>
