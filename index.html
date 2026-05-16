@@ -3,120 +3,139 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Leave Request Approval</title>
+  <title>Task Hub — Personal & Team To-Do Portal</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="page">
     <header class="header">
       <div>
-        <p class="eyebrow">Approval Workspace</p>
-        <h1>Employee Leave Request Approval</h1>
-        <p class="subtitle">Review leave details, capture decisions, and track the approval history.</p>
+        <p class="eyebrow">Task Management Portal</p>
+        <h1>Task Hub</h1>
+        <p class="subtitle">Plan your day, coordinate with your team, and ship work without losing track.</p>
       </div>
-      <div class="status-card" aria-live="polite">
-        <p class="status-label">Current Status</p>
-        <p id="current-status" class="status pending">Pending Review</p>
-        <p id="status-detail" class="status-detail">Awaiting your decision</p>
+      <div class="stats" aria-live="polite">
+        <div class="stat-card">
+          <p class="stat-label">Open</p>
+          <p class="stat-value" id="stat-open">0</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">In Progress</p>
+          <p class="stat-value" id="stat-progress">0</p>
+        </div>
+        <div class="stat-card">
+          <p class="stat-label">Done</p>
+          <p class="stat-value" id="stat-done">0</p>
+        </div>
       </div>
     </header>
 
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-view="mine" role="tab" aria-selected="true">My Tasks</button>
+      <button class="tab" data-view="team" role="tab" aria-selected="false">Team Tasks</button>
+      <button class="tab" data-view="all" role="tab" aria-selected="false">All</button>
+    </nav>
+
     <main class="grid">
-      <section class="card">
-        <h2>Employee Details</h2>
-        <dl class="details">
-          <div>
-            <dt>Name</dt>
-            <dd>Aisha Khan</dd>
-          </div>
-          <div>
-            <dt>Role</dt>
-            <dd>Customer Success Manager</dd>
-          </div>
-          <div>
-            <dt>Team</dt>
-            <dd>Enterprise Accounts</dd>
-          </div>
-          <div>
-            <dt>Requested On</dt>
-            <dd>April 21, 2024</dd>
-          </div>
-        </dl>
-      </section>
+      <section class="card form-card">
+        <h2 id="form-title">Add a Task</h2>
+        <form id="task-form">
+          <input type="hidden" id="task-id" />
 
-      <section class="card">
-        <h2>Leave Request</h2>
-        <dl class="details">
-          <div>
-            <dt>Leave Type</dt>
-            <dd>Annual Leave</dd>
-          </div>
-          <div>
-            <dt>Dates</dt>
-            <dd>May 10, 2024 – May 17, 2024</dd>
-          </div>
-          <div>
-            <dt>Total Days</dt>
-            <dd>6 working days</dd>
-          </div>
-          <div>
-            <dt>Coverage Plan</dt>
-            <dd>Handover to Luis with priority escalation doc.</dd>
-          </div>
-          <div class="full">
-            <dt>Reason</dt>
-            <dd>Family travel and personal commitments.</dd>
-          </div>
-        </dl>
-      </section>
-
-      <section class="card">
-        <h2>Approval Decision</h2>
-        <form id="approval-form">
           <label class="field">
-            Decision
-            <select id="decision" required>
-              <option value="" disabled selected>Select decision</option>
-              <option value="approved">Approve</option>
-              <option value="denied">Deny</option>
-              <option value="needs-info">Request More Info</option>
-            </select>
+            Title
+            <input id="title" type="text" placeholder="e.g. Draft Q3 launch plan" required />
           </label>
 
-          <label class="field">
-            Reviewer Name
-            <input id="reviewer" type="text" placeholder="Your name" required />
-          </label>
+          <div class="row">
+            <label class="field">
+              Owner
+              <input id="owner" type="text" placeholder="Your name or teammate" required list="known-owners" />
+              <datalist id="known-owners"></datalist>
+            </label>
+
+            <label class="field">
+              Scope
+              <select id="scope" required>
+                <option value="mine">Personal</option>
+                <option value="team">Team</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="row">
+            <label class="field">
+              Priority
+              <select id="priority" required>
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+              </select>
+            </label>
+
+            <label class="field">
+              Status
+              <select id="status" required>
+                <option value="open" selected>Open</option>
+                <option value="in-progress">In Progress</option>
+                <option value="done">Done</option>
+              </select>
+            </label>
+
+            <label class="field">
+              Due Date
+              <input id="due" type="date" />
+            </label>
+          </div>
 
           <label class="field">
-            Comments
-            <textarea id="comments" rows="4" placeholder="Add any notes for the employee."></textarea>
+            Notes
+            <textarea id="notes" rows="3" placeholder="Context, links, or acceptance criteria."></textarea>
           </label>
 
           <div class="actions">
-            <button type="submit" class="primary">Submit Decision</button>
-            <button type="button" class="ghost" id="reset">Reset</button>
+            <button type="submit" class="primary" id="submit-btn">Add Task</button>
+            <button type="button" class="ghost" id="cancel-edit" hidden>Cancel</button>
+            <button type="reset" class="ghost">Clear</button>
           </div>
           <p class="helper" id="form-helper" role="alert"></p>
         </form>
       </section>
 
-      <section class="card history">
-        <div class="history-header">
-          <h2>Approval History</h2>
-          <button class="ghost" id="clear-history" type="button">Clear History</button>
+      <section class="card list-card">
+        <div class="list-header">
+          <h2 id="list-title">My Tasks</h2>
+          <div class="filters">
+            <input id="search" type="search" placeholder="Search title, owner, notes…" />
+            <select id="filter-status">
+              <option value="">All statuses</option>
+              <option value="open">Open</option>
+              <option value="in-progress">In Progress</option>
+              <option value="done">Done</option>
+            </select>
+            <select id="filter-priority">
+              <option value="">All priorities</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+            <select id="sort">
+              <option value="due">Sort: Due date</option>
+              <option value="priority">Sort: Priority</option>
+              <option value="created">Sort: Newest</option>
+            </select>
+          </div>
         </div>
-        <ol id="history-list" class="history-list">
-          <li>
-            <span class="history-pill">Requested</span>
-            <div>
-              <p class="history-title">Employee submitted request</p>
-              <p class="history-meta">April 21, 2024 · 9:12 AM</p>
-            </div>
-          </li>
-        </ol>
+
+        <ul id="task-list" class="task-list"></ul>
+        <p class="empty" id="empty-state">No tasks yet. Add one to get started.</p>
       </section>
     </main>
+
+    <footer class="footer">
+      <p>Saved locally in your browser. <button class="link" id="export-btn" type="button">Export JSON</button> · <button class="link" id="import-btn" type="button">Import JSON</button> · <button class="link danger-link" id="clear-all" type="button">Clear all tasks</button></p>
+      <input type="file" id="import-file" accept="application/json" hidden />
+    </footer>
   </div>
 
   <script src="app.js"></script>
