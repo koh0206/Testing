@@ -3,30 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Task Hub — Personal & Team To-Do Portal</title>
+  <title>My To-do List</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="page">
     <header class="header">
-      <div>
-        <p class="eyebrow">Task Management Portal</p>
-        <h1>Task Hub</h1>
-        <p class="subtitle">Plan your day, coordinate with your team, and ship work without losing track.</p>
+      <div class="title-block">
+        <h1><span class="title-icon">✂️</span> My To-do List</h1>
+        <p class="subtitle">Personal and team tasks — Notion-style.</p>
       </div>
       <div class="stats" aria-live="polite">
-        <div class="stat-card">
-          <p class="stat-label">Open</p>
-          <p class="stat-value" id="stat-open">0</p>
-        </div>
-        <div class="stat-card">
-          <p class="stat-label">In Progress</p>
-          <p class="stat-value" id="stat-progress">0</p>
-        </div>
-        <div class="stat-card">
-          <p class="stat-label">Done</p>
-          <p class="stat-value" id="stat-done">0</p>
-        </div>
+        <div class="stat-card"><p class="stat-label">To Do</p><p class="stat-value" id="stat-todo">0</p></div>
+        <div class="stat-card"><p class="stat-label">Doing</p><p class="stat-value" id="stat-doing">0</p></div>
+        <div class="stat-card"><p class="stat-label">Done</p><p class="stat-value" id="stat-done">0</p></div>
       </div>
     </header>
 
@@ -36,106 +26,146 @@
       <button class="tab" data-view="all" role="tab" aria-selected="false">All</button>
     </nav>
 
-    <main class="grid">
-      <section class="card form-card">
-        <h2 id="form-title">Add a Task</h2>
-        <form id="task-form">
-          <input type="hidden" id="task-id" />
+    <section class="toolbar">
+      <div class="toolbar-left">
+        <input id="search" type="search" placeholder="Search Name…" />
+        <select id="filter-status" class="filter-select">
+          <option value="open">Status: To Do + Doing</option>
+          <option value="">All statuses</option>
+          <option value="To Do">To Do</option>
+          <option value="Doing">Doing</option>
+          <option value="Done 🙌">Done 🙌</option>
+          <option value="Routine Task">Routine Task</option>
+          <option value="BOD Release">BOD Release</option>
+          <option value="Today List">Today List</option>
+        </select>
+        <select id="filter-priority" class="filter-select">
+          <option value="">All priorities</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+        <select id="filter-duration" class="filter-select">
+          <option value="">All durations</option>
+          <option value="Short">Short</option>
+          <option value="Mid">Mid</option>
+          <option value="Long">Long</option>
+        </select>
+        <select id="sort" class="filter-select">
+          <option value="default">Sort: Status → Priority → Duration</option>
+          <option value="date">Sort: Date</option>
+          <option value="name">Sort: Name (A–Z)</option>
+          <option value="created">Sort: Newest</option>
+        </select>
+      </div>
+      <div class="toolbar-right">
+        <button class="primary" id="new-task">+ New</button>
+      </div>
+    </section>
 
-          <label class="field">
-            Title
-            <input id="title" type="text" placeholder="e.g. Draft Q3 launch plan" required />
-          </label>
-
-          <div class="row">
-            <label class="field">
-              Owner
-              <input id="owner" type="text" placeholder="Your name or teammate" required list="known-owners" />
-              <datalist id="known-owners"></datalist>
-            </label>
-
-            <label class="field">
-              Scope
-              <select id="scope" required>
-                <option value="mine">Personal</option>
-                <option value="team">Team</option>
-              </select>
-            </label>
-          </div>
-
-          <div class="row">
-            <label class="field">
-              Priority
-              <select id="priority" required>
-                <option value="low">Low</option>
-                <option value="medium" selected>Medium</option>
-                <option value="high">High</option>
-              </select>
-            </label>
-
-            <label class="field">
-              Status
-              <select id="status" required>
-                <option value="open" selected>Open</option>
-                <option value="in-progress">In Progress</option>
-                <option value="done">Done</option>
-              </select>
-            </label>
-
-            <label class="field">
-              Due Date
-              <input id="due" type="date" />
-            </label>
-          </div>
-
-          <label class="field">
-            Notes
-            <textarea id="notes" rows="3" placeholder="Context, links, or acceptance criteria."></textarea>
-          </label>
-
-          <div class="actions">
-            <button type="submit" class="primary" id="submit-btn">Add Task</button>
-            <button type="button" class="ghost" id="cancel-edit" hidden>Cancel</button>
-            <button type="reset" class="ghost">Clear</button>
-          </div>
-          <p class="helper" id="form-helper" role="alert"></p>
-        </form>
-      </section>
-
-      <section class="card list-card">
-        <div class="list-header">
-          <h2 id="list-title">My Tasks</h2>
-          <div class="filters">
-            <input id="search" type="search" placeholder="Search title, owner, notes…" />
-            <select id="filter-status">
-              <option value="">All statuses</option>
-              <option value="open">Open</option>
-              <option value="in-progress">In Progress</option>
-              <option value="done">Done</option>
-            </select>
-            <select id="filter-priority">
-              <option value="">All priorities</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </select>
-            <select id="sort">
-              <option value="due">Sort: Due date</option>
-              <option value="priority">Sort: Priority</option>
-              <option value="created">Sort: Newest</option>
-            </select>
-          </div>
-        </div>
-
-        <ul id="task-list" class="task-list"></ul>
-        <p class="empty" id="empty-state">No tasks yet. Add one to get started.</p>
-      </section>
-    </main>
+    <section class="table-wrap card">
+      <table class="ndb">
+        <thead>
+          <tr>
+            <th class="col-check"></th>
+            <th class="col-name">Name</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Task Duration</th>
+            <th>Date</th>
+            <th id="col-owner">Owner</th>
+            <th class="col-actions"></th>
+          </tr>
+        </thead>
+        <tbody id="task-rows"></tbody>
+      </table>
+      <p class="empty" id="empty-state">No tasks match. Click <strong>+ New</strong> to add one.</p>
+    </section>
 
     <footer class="footer">
-      <p>Saved locally in your browser. <button class="link" id="export-btn" type="button">Export JSON</button> · <button class="link" id="import-btn" type="button">Import JSON</button> · <button class="link danger-link" id="clear-all" type="button">Clear all tasks</button></p>
+      <span>Saved in your browser.</span>
+      <button class="link" id="export-btn" type="button">Export JSON</button> ·
+      <button class="link" id="import-btn" type="button">Import JSON</button> ·
+      <button class="link danger-link" id="clear-all" type="button">Clear all</button>
       <input type="file" id="import-file" accept="application/json" hidden />
     </footer>
+  </div>
+
+  <div class="modal" id="modal" hidden>
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-head">
+        <h2 id="modal-title">New task</h2>
+        <button class="icon-btn" type="button" data-close aria-label="Close">×</button>
+      </div>
+      <form id="task-form">
+        <input type="hidden" id="task-id" />
+
+        <label class="field">
+          <span class="prop-name">📝 Name</span>
+          <input id="name" type="text" placeholder="Untitled" required />
+        </label>
+
+        <div class="row">
+          <label class="field">
+            <span class="prop-name">🏷️ Status</span>
+            <select id="status">
+              <option>To Do</option>
+              <option>Doing</option>
+              <option>Done 🙌</option>
+              <option>Routine Task</option>
+              <option>BOD Release</option>
+              <option>Today List</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="prop-name">🚩 Priority</span>
+            <select id="priority">
+              <option>High</option>
+              <option selected>Medium</option>
+              <option>Low</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="prop-name">⏱ Task Duration</span>
+            <select id="duration">
+              <option>Short</option>
+              <option selected>Mid</option>
+              <option>Long</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="row">
+          <label class="field">
+            <span class="prop-name">📅 Date</span>
+            <input id="date" type="date" />
+          </label>
+
+          <label class="field">
+            <span class="prop-name">👥 Scope</span>
+            <select id="scope">
+              <option value="mine">Personal</option>
+              <option value="team">Team</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span class="prop-name">👤 Owner</span>
+            <input id="owner" type="text" placeholder="Me" list="known-owners" />
+            <datalist id="known-owners"></datalist>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="primary" id="submit-btn">Save</button>
+          <button type="button" class="ghost" data-close>Cancel</button>
+        </div>
+        <p class="helper" id="form-helper" role="alert"></p>
+      </form>
+    </div>
   </div>
 
   <script src="app.js"></script>
